@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title> Oil and gas wells in California</title>
+
+    <!-- Load Geojson files as JavaScript -->
+    <script src="wells.js"></script>
+    <script src="admin_boundaries.js"></script>
+    <script src="counties.js"></script>
+    <script src="state_line.js"></script>
+
+    <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Load Turf from CDN -->
+    <script src="https://npmcdn.com/@turf/turf@6.5.0/turf.min.js"></script>
+
+    <!-- Load MapBox -->
+    <script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+
+    <!-- Load Omnivore -->
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+
+    <!-- Load Echarts -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.js'></script>
+
+    <!-- Load Marker Cluster plugin -->
+    <link rel="stylesheet" type="text/css"
+        href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.Default.css"
+        integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
+        crossorigin="">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.5.0/dist/MarkerCluster.css"
+        integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
+        crossorigin="">
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.0/dist/leaflet.markercluster.js"
+        integrity="sha512-pWPELjRaw2ZdoT0PDi7iRpRlk1XX3rtnfejJ/HwskyojpHei+9hKpwdphC4yssNt4FM0TjMQOmMrk6ZYSn274w=="
+        crossorigin=""></script>
+
+    <!-- Load style CSS file -->
+    <link rel="stylesheet" href="style.css" type="text/css">
+
+    <!-- Load JavaScript files -->
+    <script src="functions.js"></script>
+    <script src="main.js"></script>
+</head>
+
+<body onload="init()">
+    <div class="row">
+        <div class="left column">
+            <div id="mapid"></div>
+            <div id="directions" class="center">
+                <p>
+                    Click on a cluster to zoom in further. Click on a well or an administrative
+                    boundary to view more information via popup.
+                </p>
+            </div>
+        </div>
+        <div id="query" class="right column center">
+            <span class="center" style="font-size:1.4em"><b>Oil and gas wells in California</b></span> <br>
+
+            <label class="center">
+                <span style="font-size:1.1em">Selection:</span>
+                <select id="county" style="font-size:1.05em">
+                    <option value="All">California</option>
+                    <option value="Fresno">Fresno County</option>
+                    <option value="Kern">Kern County</option>
+                    <option value="Los Angeles">Los Angeles County</option>
+                    <option value="Monterey">Monterey County</option>
+                    <option value="Orange">Orange County</option>
+                    <option value="San Luis Obispo">San Luis Obispo County</option>
+                    <option value="Santa Barbara">Santa Barbara County</option>
+                    <option value="Ventura">Ventura County</option>
+                </select>
+            </label> <br>
+
+            <div id="container" class="center"></div>
+
+            <div>
+                <span class="center">Upload a polygon as a KML file to add it to the map.</span> <br>
+                <form action='#' onsubmit="return false;" class="center">
+                    <input type='file' id='fileinput'>
+                </form> <br>
+                <form action='#' onsubmit="return false;" class="center">
+                    <input type='button' id='btnLoad' value='Upload' onclick='loadFile()'>
+                </form>
+            </div>
+            <div>
+                <p class="center">Select the uploaded polygon and input the buffer size in miles
+                    to create the buffer and a CSV file of the queried wells.
+                </p>
+                <form action="#" onsubmit="return false;" class="center">
+                    <label for="bsize">Buffer size (miles):</label>
+                    <input type="number" min="0" max="50" id="bsize" name="bsize">
+                    <input type="button" id='btnBuffer' value="Create buffer" onclick='bufferPolygon(polygon)'>
+                </form>
+            </div>
+            <div id="buffer_info" class="center"></div>
+            <div id="download_btn" class="center">
+                <button id="csv_download" disabled="true" onclick="document.getElementById('a').click()">Download CSV of
+                    queried wells</button>
+                <a id="a" download hidden></a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
